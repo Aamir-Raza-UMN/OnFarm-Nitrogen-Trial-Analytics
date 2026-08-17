@@ -1,5 +1,9 @@
 # 🌽 OnFarm-Nitrogen-Trial-Analytics
 
+<p align="center">
+  <img src="07_figures/PAC_UMN.png" alt="University of Minnesota Precision Agriculture Center" height="200">
+</p>
+
 ## Methods for Analyzing On-Farm Nitrogen Trials to Support Precision Management
 
 This repository contains the analytical scripts developed for the study:
