@@ -389,28 +389,6 @@ Local EONRs can also be compared with whole-field or observed block EONRs using 
 
 ---
 
-# 🖼️ 7. Figures and Graphical Resources
-
-The [`07_figures`](07_figures/) folder contains figure-generation material and supporting graphical resources used for this repository and associated research outputs.
-
-Current graphical resources include:
-
-```text
-07_figures/
-│
-├── AFREC.png
-├── MCRPC.png
-├── PAC_UMN.png
-├── USDA_NRCS.png
-└── README.md
-```
-
-Institutional and funding-agency logos are included for **acknowledgment and attribution purposes only**.
-
-All logos, names, and trademarks remain the property of their respective organizations.
-
----
-
 # ⚙️ Software Environment
 
 The analyses described in the study were performed using:
