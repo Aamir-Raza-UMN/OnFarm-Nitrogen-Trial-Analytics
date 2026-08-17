@@ -1,271 +1,651 @@
-# 🌽 Corn-Yield-Prediction-Tool
-<img src="PAC.png" alt="PAC Logo" width="240" height="240" style="display: inline-block; margin: 10px;">   <img src="USDA.png" alt="USDA Logo" width="240" height="240" style="display: inline-block; margin: 10px;">   <img src="NASA.png" alt="NASA Logo" width="240" height="240" style="display: inline-block; margin: 10px;">
+# 🌽 OnFarm-Nitrogen-Trial-Analytics
 
+## Methods for Analyzing On-Farm Nitrogen Trials to Support Precision Management
 
-This repository provides a complete workflow for predicting corn yield using vegetation indices, soil data, topography, and climate variables.  
+This repository contains the analytical scripts developed for the study:
+
+> **Methods for analyzing on-farm nitrogen trials to support precision management**
+
+The repository provides a reproducible analytical workflow for evaluating spatially referenced **on-farm nitrogen (N) experiments** and supporting **precision nitrogen management (PNM)**.
+
+The framework integrates **whole-field, block-based, and grid-based analyses** with machine learning, causal machine learning, agronomic yield-N response modeling, economic optimum nitrogen rate (**EONR**) estimation, and agronomic and economic evaluation of alternative N-management strategies.
 
 ---
 
-## 📦 Requirements
+## 🎯 Study Objectives
+The analytical framework was developed to:
+1. Compare analytical approaches across spatial scales and on-farm experimental designs.
+2. Develop a knowledge-guided stacking machine-learning approach for robust local EONR estimation.
+3. Compare stacking machine learning with individual machine-learning algorithms and causal machine learning.
+4. Estimate spatially varying agronomic optimum nitrogen rates (**AONR**) and economic optimum nitrogen rates (**EONR**).
+5. Quantify the potential, realized benefit, and remaining opportunity associated with precision nitrogen management.
 
-Ensure you are using **Python 3.11.9** and have the following libraries installed:
+---
+
+## 🔬 Analytical Workflow
+
+The repository follows the major analytical steps used in the study:
+
+```text
+On-farm experimental data
+        │
+        ▼
+01_data_preprocessing
+        │
+        ▼
+02_machine_learning
+        │
+        ▼
+03_N_response
+        │
+        ▼
+04_multiscale_analysis
+        │
+        ▼
+05_PNM_evaluation
+        │
+        ▼
+06_statistical_analysis
+```
+
+---
+
+# 📂 Repository Structure
+
+```text
+OnFarm-Nitrogen-Trial-Analytics/
+│
+├── README.md
+│
+├── 01_data_preprocessing/
+│   └── Data cleaning, spatial extraction, aggregation,
+│       and feature preparation
+│
+├── 02_machine_learning/
+│   └── Individual ML models, stacking ensemble,
+│       causal machine learning, and model evaluation
+│
+├── 03_N_response/
+│   └── Yield–N simulation, agronomic response fitting,
+│       AONR estimation, and EONR estimation
+│
+├── 04_multiscale_analysis/
+│   └── Whole-field, block-based, and grid-based analyses
+│
+├── 05_PNM_evaluation/
+│   └── Agronomic and economic evaluation of
+│       precision nitrogen management scenarios
+│
+├── 06_statistical_analysis/
+│   └── Statistical comparisons, performance metrics,
+│       uncertainty analysis, and spatial agreement
+│
+└── 07_figures/
+    └── graphical material
+```
+
+---
+
+# 📊 1. Data Preprocessing
+
+The scripts in [`01_data_preprocessing`](01_data_preprocessing/) prepare spatially referenced experimental and environmental variables for subsequent analyses.
+
+The workflow includes processing and integration of:
+
+### Management Variables
+* Total N rate
+* Preplant N rate
+* Sidedress N rate
+* Ratio of sidedress N to total N
+* Seeding rate
+* Treatment information
+* Block and grid identifiers
+
+### Yield Data
+Corn grain yield was collected using combine-mounted yield monitors.
+The preprocessing workflow includes:
+* Grain-flow delay correction
+* Moisture filtering
+* Harvest-speed filtering
+* Yield outlier removal
+* Grain-moisture standardization
+* Assignment of yield observations to experimental grids and blocks
+
+### Soil Variables
+Soil properties include:
+* Sand
+* Silt
+* Clay
+* Soil organic matter
+* Bulk density
+* Soil pH
+* Saturated soil water content
+
+### Topographic Variables
+LiDAR-derived terrain attributes include:
+* Relative elevation
+* Standardized topographic position index
+* Topographic wetness index
+* Slope
+* Plan curvature
+* Profile curvature
+* Tangential curvature
+* Surface roughness
+* Terrain ruggedness index
+* Aspect northness
+* Aspect eastness
+
+### Remote-Sensing Information
+
+Satellite-derived variables used in the analysis include soil and crop spectral information such as the **soil brightness index (SBI)** and vegetation information used to support precision N management.
+
+---
+
+# 🤖 2. Machine Learning
+
+The [`02_machine_learning`](02_machine_learning/) folder contains scripts for developing and evaluating yield-prediction and N-response models.
+
+Four individual machine-learning algorithms were evaluated:
+
+* **Random Forest (RF)**
+* **Extreme Gradient Boosting (XGB)**
+* **Support Vector Regression (SVR)**
+* **TabTransformer (TabTrans)**
+
+---
+
+## Stacking Machine Learning
+
+The optimized individual models are integrated into a **stacking ensemble**.
+
+```text
+Random Forest ──────┐
+                    │
+XGBoost ────────────┤
+                    │
+SVR ────────────────┼──► Ridge Meta-Learner ──► Yield Prediction
+                    │
+TabTransformer ─────┘
+```
+
+Ridge regression is used as the meta-learner to combine predictions from the individual base models.
+
+Agronomic knowledge is incorporated into the modeling workflow to reduce biologically unrealistic yield responses to increasing nitrogen rates.
+
+---
+
+## Causal Machine Learning
+
+A **Causal Forest Double Machine Learning (CF-DML)** framework is also implemented.
+
+In this analysis:
+
+* **Outcome:** corn grain yield
+* **Treatment:** nitrogen rate
+* **Covariates:** soil, topography, seeding rate, and other management variables
+
+The causal model is designed to estimate spatially heterogeneous N-treatment effects rather than only predicting yield.
+
+---
+
+# 📈 3. Yield–Nitrogen Response Analysis
+
+Scripts in [`03_N_response`](03_N_response/) simulate and analyze corn yield response to changing N rates while holding other environmental and management variables constant.
+
+Four agronomic response functions are evaluated:
+
+### Plateau
+
+```text
+P
+```
+
+Represents situations where increasing N produces no measurable yield response.
+
+### Linear
+
+```text
+L
+```
+
+Represents a continuous positive yield response to increasing N.
+
+### Linear-Plateau
+
+```text
+LP
+```
+
+Represents a linear yield increase until a critical N rate is reached, followed by a yield plateau.
+
+### Quadratic-Plateau
+
+```text
+QP
+```
+
+Represents a diminishing yield response to N until maximum yield is reached.
+
+Candidate models are compared using the **Akaike Information Criterion (AIC)**.
+
+The selected response function is subsequently used to estimate:
+
+* **AONR — Agronomic Optimum Nitrogen Rate**
+* **EONR — Economic Optimum Nitrogen Rate**
+
+---
+
+# 🗺️ 4. Multiscale On-Farm Analysis
+
+The [`04_multiscale_analysis`](04_multiscale_analysis/) folder implements three analytical scales.
+
+## Whole-Field Analysis
+
+Grid-level observations are aggregated to characterize the overall field response to nitrogen.
+
+The whole-field analysis provides benchmark estimates of:
+
+* Whole-field yield–N response
+* Whole-field AONR
+* Whole-field EONR
+* Confidence intervals for optimum N rates
+
+---
+
+## Block-Based Analysis
+
+Experimental blocks are used as locally matched treatment-comparison units.
+
+The analysis evaluates:
+
+* Observed yield
+* Predicted yield
+* Applied N
+* Profit
+* PFPN
+* Observed block-level AONR
+* Observed block-level EONR
+* ML-predicted block-level AONR
+* ML-predicted block-level EONR
+
+Observed and model-derived optimum N rates are compared to evaluate whether the ML models reproduce N-management decisions supported by field observations.
+
+---
+
+## Grid-Based Analysis
+
+For each spatial grid, machine-learning models simulate yield across alternative N rates while keeping other grid-specific predictors fixed.
+
+```text
+Grid-specific conditions
+        │
+        ├── Soil
+        ├── Topography
+        ├── Seeding rate
+        ├── Management
+        └── Other predictors
+                │
+                ▼
+       Simulate N rates
+                │
+                ▼
+       Predict yield Y(N)
+                │
+                ▼
+     Fit agronomic response
+                │
+        ┌───────┴───────┐
+        ▼               ▼
+      AONR             EONR
+```
+
+This procedure generates spatially explicit optimum N recommendations.
+
+---
+
+# 💰 5. Precision Nitrogen Management Evaluation
+
+The [`05_PNM_evaluation`](05_PNM_evaluation/) folder evaluates alternative nitrogen-management strategies.
+
+Agronomic and economic performance indicators include:
+
+* Grain yield
+* Total N rate
+* Partial factor productivity of applied N (**PFPN**)
+* Profit
+* Change in profit relative to farmer practice
+
+---
+
+## PNM Potential
+
+PNM potential represents the economic gain theoretically achievable through optimized N management relative to farmer practice.
+
+---
+
+## Realized Benefit
+
+Realized benefit represents the economic improvement actually achieved by the implemented precision N-management strategy.
+
+---
+
+## Potential Capture
+
+Potential capture quantifies how much of the estimated opportunity was realized:
+
+```text
+Potential Capture (%) =
+Realized Benefit / PNM Potential × 100
+```
+
+---
+
+## Remaining Opportunity
+
+Remaining opportunity represents the difference between the economic optimum and the implemented PNM strategy.
+
+```text
+Remaining Opportunity =
+Economic Optimum Profit − Implemented PNM Profit
+```
+
+---
+
+## Profit-Potential Zones
+
+Grid-level economic opportunities are also classified spatially into zones such as:
+
+* Whole field
+* Moderate potential
+* High potential
+* Very high potential
+
+These zones identify areas where precision N management may provide the greatest economic opportunity.
+
+---
+
+# 📐 6. Statistical Analysis
+
+The [`06_statistical_analysis`](06_statistical_analysis/) folder contains scripts for statistical and model-performance evaluation.
+
+Model performance is evaluated using:
+
+* Coefficient of determination (**R²**)
+* Root mean square error (**RMSE**)
+* Mean absolute error (**MAE**)
+* Mean bias error (**MBE**)
+
+Additional analyses include:
+
+* Cross-validation
+* Independent grid-level model evaluation
+* Permutation feature importance
+* Mixed-effects analysis
+* Confidence intervals
+* Comparison of observed and predicted optimum N rates
+* Spatial agreement among analytical strategies
+
+Local EONRs can also be compared with whole-field or observed block EONRs using predefined agronomic tolerance ranges.
+
+---
+
+# 🖼️ 7. Figures and Graphical Resources
+
+The [`07_figures`](07_figures/) folder contains figure-generation material and supporting graphical resources used for this repository and associated research outputs.
+
+Current graphical resources include:
+
+```text
+07_figures/
+│
+├── AFREC.png
+├── MCRPC.png
+├── PAC_UMN.png
+├── USDA_NRCS.png
+└── README.md
+```
+
+Institutional and funding-agency logos are included for **acknowledgment and attribution purposes only**.
+
+All logos, names, and trademarks remain the property of their respective organizations.
+
+---
+
+# ⚙️ Software Environment
+
+The analyses described in the study were performed using:
+
+### Python
+
+```text
+Python 3.8.3
+JupyterLab
+```
+
+Python was used for:
+
+* Data preprocessing
+* Machine-learning model development
+* Hyperparameter optimization
+* Causal machine learning
+* Yield–N simulation
+* Agronomic response fitting
+* AONR and EONR estimation
+* Agronomic and economic evaluation
+* Model-performance analysis
+
+### R
+
+```text
+R 4.4.2
+```
+
+R was used for statistical analyses, including mixed-effects modeling and whole-field response analysis.
+
+### Spatial Analysis
+
+```text
+QGIS
+```
+
+QGIS was used for spatial processing, raster analysis, terrain-feature extraction, and map development.
+
+---
+
+# 🔧 Requirements
+
+Package requirements depend on the individual analytical components.
+
+A complete environment specification will be provided in:
+
+```text
+requirements.txt
+```
+
+Once available, Python dependencies can be installed using:
 
 ```bash
-python --version
-# Python 3.11.9
-
-pip install pandas==2.2.3 joblib==1.4.2 numpy==1.26.4 pillow==11.1.0 scipy==1.15.1 xgboost==3.0.2
-
-```
-## 📊 Data Preparation Workflow
-**1. Vegetation Indices (VIs)**
-
-- Use [Vegetation_Indices_L8.js](Vegetation_Indices_L8.js) in Google Earth Engine (GEE) to calculate vegetation indices for your region of interest.
-
-- Provide area boundary input and select imagery from a consistent growth stage (e.g., 15–31 August for Minnesota).
-
-- Export the results as GeoTIFF files.
-
-- Open one GeoTIFF in ArcGIS or QGIS, calculate latitude/longitude for each pixel, and export as CSV (Lat, Lon, Value).
-
-- Alternatively, you can automate this step in Python or directly in GEE.
-
-
-**2. Soil Data**
-
-- Use [download_polaris_soil_rasters.R](download_polaris_soil_rasters.R) to download POLARIS soil data for your region.
-
-- Extract three soil depths: 0–5 cm, 5–15 cm, 15–30 cm.
-
-- Rename rasters with consistent variable names (e.g., 0_5_OM, 5-15_OM, 15-30_OM).
-
-- Place them in the same folder as other variables.
-
-
-**3. Topography Data**
-
-- Download DEM for your study area.
-
-- Derive terrain attributes:
-Relative elevation, Slope, Aspect, Curvature, Topographic Wetness Index (TWI)
-
-Formula for TWI:
-
-<p><strong>TWI = ln(α / tanβ)</strong></p>
-<p>where:</p>
-<ul>
-  <li><strong>α</strong> = upslope contributing area per unit width (m²/m)</li>
-  <li><strong>β</strong> = local slope angle (radians)</li>
-</ul>
-
-**4. Data Integration**
-
-- Use [raster_point_extraction_and_data_merge.py](raster_point_extraction_and_data_merge.py) to extract numeric data from VIs, soil, and topography rasters.
-
-- Match datasets by VI pixel coordinates (Lat, Lon).
-
-- Average soil depth variables into single values.
-
-- Final merged CSV should include these columns:
+pip install -r requirements.txt
 ```
 
+Because some machine-learning components may require additional dependencies, users should verify the environment specified for each analytical folder before execution.
 
-MNDWI, TVI, EVI, NDWI, ELAI, NCMI, SR, GCI, CVI, GCVI, WDRVI, GNDVI, NDVI, ARVI,
-Sand_%, Clay_%, Silt_%, OM_%, pH, BD_g/cm3, Ksat_cm/hr, HB_Kpa, MPSD, SPIPMPD, 
-PSDI, RSWC, SSWC, Lat, Lon, TWI, Curvature, Slope, Relative_Elevation, Aspect
+---
+
+# ▶️ Running the Workflow
+
+The recommended execution order is:
+
+```text
+1. 01_data_preprocessing
+          ↓
+2. 02_machine_learning
+          ↓
+3. 03_N_response
+          ↓
+4. 04_multiscale_analysis
+          ↓
+5. 05_PNM_evaluation
+          ↓
+6. 06_statistical_analysis
+          ↓
+7. 07_figures
 ```
 
-**5. Climate Data**
+Each folder contains or will contain a dedicated `README.md` describing the required inputs, scripts, outputs, and execution sequence for that analytical component.
 
-<u>Collect daily climate data:</u>
+---
 
-- **PAR_TOT** (Photosynthetically Active Radiation)
-- **SW_DWN** (Surface Shortwave Downward Radiation)
-- **Mean Temperature (TM)**, **Maximum (TM_MAX)**, **Minimum (TM_MIN)**
-- **Precipitation**
+# 🔒 Data Availability
 
-<u>Derived Variables:</u>
+The original datasets used in this study are **not included in this repository**.
 
-**Corn Heat Units (CHU):** Adjusts min/max temperature thresholds (≥4.4°C and ≥10°C).
+The data are owned by the participating farmers and are not publicly available because of privacy, confidentiality, and data-sharing restrictions.
 
-Daily CHU = average of adjusted min and max heat contributions.
+This repository therefore distributes the **analytical scripts and workflow rather than the original research data**.
 
+Researchers interested in applying the methodology can adapt the scripts to spatially referenced on-farm experiments with equivalent input variables.
 
-<h3>Growing Degree Days (GDD)</h3>
-<p><strong>GDD = (T<sub>max</sub> + T<sub>min</sub>) / 2 - 10</strong></p>
-<p>Negative values are set to 0.</p>
-<p><em>Widely used in crop growth modeling.</em></p>
+---
 
-<h3>Abundant and Well-Distributed Rainfall Index (AWDR)</h3>
-<p><strong>AWDR = PPT × SDI</strong></p>
-<p>where:</p>
-<ul>
-  <li>PPT = precipitation</li>
-  <li>SDI = Shannon Diversity Index of rainfall distribution</li>
-</ul>
+# 📖 Citation
 
-<h3>Standardized Precipitation Index (SPI)</h3>
-<p><strong>SPI = (x - x̄) / σ</strong></p>
-<p>where:</p>
-<ul>
-  <li>x = observed precipitation</li>
-  <li>x̄ = mean precipitation</li>
-  <li>σ = standard deviation</li>
-</ul>
+If you use or adapt this repository, please cite the associated manuscript:
 
-## 📂 Final Data Output
+> **Lu, J., Miao, Y., Mizuta, K., Raza, A., Adeyemi, B., Negrini, R., & Anthony, P.**
+> *Methods for analyzing on-farm nitrogen trials to support precision management.*
 
-- At the end of preparation, you should have two CSV files:
+The complete journal citation and DOI will be added after publication.
 
-- Static variables → Vegetation Indices + Soil + Topography
+---
 
-- Dynamic variables → Climate features (CHU, GDD, AWDR, SPI, etc.)
+# ✍️ Contributors
 
-These files are then used as inputs for the Corn-Yield-Prediction-Tool.
+## Junjun Lu
 
-<hr>
+**Contributions:**
+Data curation, formal analysis, investigation, methodology, and writing – original draft.
 
-<h2>⚙️ Model Setup and Execution</h2>
+Precision Agriculture Center
+Department of Soil, Water and Climate
+University of Minnesota, St. Paul, Minnesota, USA
 
-<p>To run the model, download the base files from the following link:</p>
-<p><a href="https://drive.google.com/drive/folders/1o-nj30ePG_8DWgCBAw8yOjwm_CjHq0Mb?usp=drive_link" target="_blank">📂 Model Base Files</a></p>
+School of Surveying and Land Information Engineering
+Henan Polytechnic University, Jiaozuo, China
 
-<p>
-  Additionally, download the <a href="Tool.py">Tool.py</a> file and place it in the same folder as the base files.
-</p>
+---
 
+## Yuxin Miao, Ph.D.
 
-<h3>🔧 File Path Configuration</h3>
-<p>Right-click on <code>imputer.pkl</code>, copy its path, and update it in the code lines for all logos and model base files inside <code>Tool.py</code>. Save the file after editing.  
-This can be done in Notepad or any Python-supported editor.</p>
+**Contributions:**
+Conceptualization, methodology, funding acquisition, supervision, resources, project administration, and writing – review and editing.
 
-<pre><code class="language-python">
-logo1 = Image.open("C:/Users/araza/Desktop/Model_base_files/PAC.png").resize((150, 100))
-logo2 = Image.open("C:/Users/araza/Desktop/Model_base_files/USDA.png").resize((120, 100))
-logo3 = Image.open("C:/Users/araza/Desktop/Model_base_files/NASA.png").resize((120, 100))
+Precision Agriculture Center
+Department of Soil, Water and Climate
+University of Minnesota, St. Paul, Minnesota, USA
 
-model   = joblib.load("C:/Users/araza/Desktop/Model_base_files/stacking_model.pkl")
-scaler  = joblib.load("C:/Users/araza/Desktop/Model_base_files/scaler.pkl")
-imputer = joblib.load("C:/Users/araza/Desktop/Model_base_files/imputer.pkl")
-</code></pre>
+**Correspondence:**
+[ymiao@umn.edu](mailto:ymiao@umn.edu)
 
-<h3>▶️ Running the Tool</h3>
-<ol>
-  <li>Open <strong>Command Prompt</strong>.</li>
-  <li>Navigate to the folder containing the base files:
-    <pre><code>cd C:\Users\araza\Desktop\Model_base_files</code></pre>
-  </li>
-  <li>Run the tool:
-    <pre><code>python Tool.py</code></pre>
-  </li>
-</ol>
-<p>The application will launch (see figure below). Keep the command prompt open while using the tool.</p>
+---
 
-<hr>
+## Katsutoshi Mizuta
 
-<!-- Tool UI Screenshot -->
-<p align="center">
-  <a href="Tool_UI.png">
-    <img src="Tool_UI.png" alt="Corn Yield Prediction Tool – User Interface" width="900">
-  </a>
-  <br>
-  <em>Figure: Corn Yield Prediction Tool – User Interface</em>
-</p>
+**Contributions:**
+Methodology, data curation, investigation, and writing – review and editing.
 
+Plant and Soil Science Department
+University of Kentucky, Lexington, Kentucky, USA
 
-<h2>🖥️ Prototype Tool Implementation</h2>
+---
 
-<p>The prototype User Interface (UI) was designed to simplify the use of the corn yield prediction framework. The workflow involves the following steps:</p>
+## Aamir Raza
 
-<ul>
-  <li><strong>Upload Input Files</strong>:
-    <ul>
-      <li>CSV file with predictor (independent) variables (vegetation indices, lat/lon coordinates, soil, and topography).</li>
-      <li>CSV file with daily weather parameters (precipitation, temperature, radiation, etc.).</li>
-    </ul>
-  </li>
-  <li><strong>Data Cleaning</strong>:  
-  The <em>Clean IVs</em> function automatically detects and handles missing or <code>NaN</code> values, ensuring consistency and reliability before modeling.</li>
-  <li><strong>Select Prediction Year</strong>:  
-  Users can choose the target year via a drop-down menu.</li>
-  <li><strong>Predict Yield</strong>:  
-  Clicking the <em>Predict Yield</em> button runs the model on the uploaded datasets and generates predictions.</li>
-  <li><strong>Show Summary</strong>:  
-  Displays descriptive statistics (mean, standard deviation, range) of the predicted yields.</li>
-  <li><strong>Export Results</strong>:  
-  Users can export predictions (Latitude, Longitude, Yield) as a CSV file, which can be mapped for spatial yield distribution analysis.</li>
-</ul>
+**Contributions:**
+Software development and writing – review and editing.
 
-<hr>
+Precision Agriculture Center
+Department of Soil, Water and Climate
+University of Minnesota, St. Paul, Minnesota, USA
 
-<h2>🔬 Prototype Demonstration</h2>
+---
 
-<p>To operationalize the spatial regression (SR) framework, the <strong>Corn Yield Prediction Tool</strong> was developed with a graphical user interface (GUI). This makes the tool accessible to researchers, agronomists, and stakeholders without requiring programming expertise.</p>
+## Biola Adeyemi
 
-<p>The GUI provides a step-by-step workflow:</p>
-<ol>
-  <li>Upload CSV files with vegetation indices, coordinates, soil/topographic variables, and daily weather data.</li>
-  <li>The <em>Clean IVs</em> function ensures input integrity by handling missing values.</li>
-  <li>Select the prediction year.</li>
-  <li>Run predictions using the stacking regression model, which integrates environmental, soil, and vegetation predictors.</li>
-  <li>Review descriptive statistics of predicted yields.</li>
-  <li>Export results as CSV for mapping and spatial analysis of yield distributions.</li>
-</ol>
+**Contributions:**
+Software development and writing – review and editing.
 
-<p>This prototype serves as a bridge between advanced machine learning models and practical agricultural applications. By unifying environmental, soil, and weather data into an intuitive workflow, it empowers stakeholders to query, analyze, and visualize regional yield forecasts effectively.</p>
+Precision Agriculture Center
+Department of Soil, Water and Climate
+University of Minnesota, St. Paul, Minnesota, USA
 
-<hr>
+---
 
-<hr>
+## Renzo Negrini
 
-<hr>
+**Contributions:**
+Investigation and writing – review and editing.
 
-<h2>✍️ Authors</h2>
+Precision Agriculture Center
+Department of Soil, Water and Climate
+University of Minnesota, St. Paul, Minnesota, USA
 
-<div style="margin-bottom:20px;">
-  <h3>Aamir Raza</h3>
-  <p>PhD Student | Graduate Research Assistant<br>
-  🌱 Precision Agriculture Center<br>
-  📍 Department of Soil, Water, and Climate<br>
-  University of Minnesota | St. Paul, MN 55108, USA</p>
-</div>
+---
 
-<div style="margin-bottom:20px;">
-  <h3>Yuxin Miao, Ph.D.</h3>
-  <p> Professor of Precision Agriculture <br>
-  🌱 Precision Agriculture Center<br>
-  📍 Department of Soil, Water and Climate<br>
-  University of Minnesota | St. Paul, MN 55108, USA</p>
-</div>
+## Peter Anthony
 
-<div style="margin-bottom:20px;">
-  <h3>Dr. Yanbo Huang</h3>
-  <p>Research Agricultural Engineer<br>
-  📍 USDA-ARS Genetics and Sustainable Agriculture Research Unit<br>
-  Mississippi State, MS 39762, USA</p>
-</div>
+**Contributions:**
+Experiment implementation, resources, and writing – review and editing.
 
-<div style="margin-bottom:20px;">
-  <h3>Junjun Lu</h3>
-  <p>🌱 Precision Agriculture Center<br>
-  📍 Department of Soil, Water and Climate<br>
-  University of Minnesota | St. Paul, MN 55108, USA</p>
-</div>
+Anthony Farm
+St. Peter, Minnesota, USA
 
-<div style="margin-bottom:20px;">
-  <h3>Zhengwei Yang</h3>
-  <p>📍 USDA-NASS Research and Development Division<br>
-  Washington, D.C. 20250, USA</p>
-</div>
+---
 
-<div style="margin-bottom:20px;">
-  <h3>Rajat Bindlish</h3>
-  <p>📍 NASA Goddard Space Flight Center<br>
-  Greenbelt, MD 20771, USA</p>
-</div>
+# 🙏 Acknowledgments
 
-<p><strong>📌 Correspondence:</strong><br>
-<a href="mailto:ymiao@umn.edu">ymiao@umn.edu</a> ; 
-<a href="mailto:yanbo.huang@usda.gov">yanbo.huang@usda.gov</a></p>
+We sincerely acknowledge the collaborating farmers and agricultural consultants whose participation made this on-farm research possible.
 
-<hr>
+We particularly thank:
+
+* **Peter Anthony — Anthony Farm**
+* **Brian Molitor — Molitor Brothers Farm**
+* **Blake Carlson — Molitor Brothers Farm**
+
+We gratefully acknowledge their contribution of **field access, farmer-owned research data, operational support, and practical knowledge** throughout the on-farm experiments.
+
+We also thank members of the **University of Minnesota Precision Agriculture group** for their field and data-collection support, including:
+
+* Nicholas Brand
+* Seiya Wakahara
+* Ayoub Kechchour
+* Sukhdeep Singh
+
+---
+
+# 💵 Funding
+
+Field research and data collection were supported by:
+
+* **Minnesota Department of Agriculture / Agricultural Fertilizer Research and Education Council (AFREC)**
+  Projects R2024-27 and R2025-Q
+
+* **USDA-NRCS Conservation Innovation Grants On-Farm Trials Program**
+  NR213A750013G005 and NR243A750011G014
+
+* **Minnesota Corn Research and Promotion Council Innovation Grant**
+
+* **USDA National Institute of Food and Agriculture (NIFA)**
+  State Projects MIN-25-134 and MIN-25-119
+
+The corresponding organizational and funding logos are available in the [`07_figures`](07_figures/) directory.
+
+---
+
+# 📜 License
+
+Code-use and redistribution conditions will be provided in the repository `LICENSE` file.
+
+The license for this repository applies only to the distributed code and documentation.
+
+**The farmer-owned research data are not distributed under this repository license.**
