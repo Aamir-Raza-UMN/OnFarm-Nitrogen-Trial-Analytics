@@ -549,18 +549,15 @@ We gratefully acknowledge their contribution of **field access, farmer-owned res
 
 Field research and data collection were supported by:
 
-* **Minnesota Department of Agriculture / Agricultural Fertilizer Research and Education Council (AFREC)**
-  Projects R2024-27 and R2025-Q
-
-* **USDA-NRCS Conservation Innovation Grants On-Farm Trials Program**
-  NR213A750013G005 and NR243A750011G014
-
-* **Minnesota Corn Research and Promotion Council Innovation Grant**
-
-* **USDA National Institute of Food and Agriculture (NIFA)**
-  State Projects MIN-25-134 and MIN-25-119
-
-The corresponding organizational and funding logos are available in the [`07_figures`](07_figures/) directory.
+<p align="center">
+  <img src="07_figures/USDA NIFA.png" alt="USDA NIFA" height="120">
+  &nbsp;&nbsp;&nbsp;
+  <img src="07_figures/USDA_NRCS.png" alt="USDA Natural Resources Conservation Service" height="120">
+  &nbsp;&nbsp;&nbsp;
+  <img src="07_figures/AFREC.png" alt="Agricultural Fertilizer Research and Education Council" height="120">
+  &nbsp;&nbsp;&nbsp;
+  <img src="07_figures/MCRPC.png" alt="Minnesota Corn Research and Promotion Council" height="120">
+</p>
 
 ---
 
