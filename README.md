@@ -476,13 +476,7 @@ Each folder contains or will contain a dedicated `README.md` describing the requ
 
 # 🔒 Data Availability
 
-The original datasets used in this study are **not included in this repository**.
-
-The data are owned by the participating farmers and are not publicly available because of privacy, confidentiality, and data-sharing restrictions.
-
-This repository therefore distributes the **analytical scripts and workflow rather than the original research data**.
-
-Researchers interested in applying the methodology can adapt the scripts to spatially referenced on-farm experiments with equivalent input variables.
+The original datasets used in this study are **not included in this repository**. The data are owned by the participating farmers and are not publicly available because of privacy, confidentiality, and data-sharing restrictions. This repository therefore distributes the **analytical scripts and workflow rather than the original research data**. Researchers interested in applying the methodology can adapt the scripts to spatially referenced on-farm experiments with equivalent input variables.
 
 ---
 
@@ -500,105 +494,55 @@ The complete journal citation and DOI will be added after publication.
 # ✍️ Contributors
 
 ## Junjun Lu
-
-**Contributions:**
-Data curation, formal analysis, investigation, methodology, and writing – original draft.
-
-Precision Agriculture Center
-Department of Soil, Water and Climate
-University of Minnesota, St. Paul, Minnesota, USA
-
-School of Surveying and Land Information Engineering
-Henan Polytechnic University, Jiaozuo, China
-
----
+🌱 Precision Agriculture Center<br>
+📍 Department of Soil, Water and Climate<br>
+University of Minnesota | St. Paul, MN 55108, USA<br>
+📍 School of Surveying and Land Information Engineering<br>
+Henan Polytechnic University | Jiaozuo 454000, China
 
 ## Yuxin Miao, Ph.D.
-
-**Contributions:**
-Conceptualization, methodology, funding acquisition, supervision, resources, project administration, and writing – review and editing.
-
-Precision Agriculture Center
-Department of Soil, Water and Climate
-University of Minnesota, St. Paul, Minnesota, USA
-
-**Correspondence:**
-[ymiao@umn.edu](mailto:ymiao@umn.edu)
-
----
+🌱 Precision Agriculture Center<br>
+📍 Department of Soil, Water and Climate<br>
+University of Minnesota | St. Paul, MN 55108, USA<br>
+📧 ymiao@umn.edu
 
 ## Katsutoshi Mizuta
-
-**Contributions:**
-Methodology, data curation, investigation, and writing – review and editing.
-
-Plant and Soil Science Department
-University of Kentucky, Lexington, Kentucky, USA
-
----
+🌱 Plant and Soil Science Department<br>
+📍 University of Kentucky<br>
+Lexington, KY 40546-0091, USA
 
 ## Aamir Raza
-
-**Contributions:**
-Software development and writing – review and editing.
-
-Precision Agriculture Center
-Department of Soil, Water and Climate
-University of Minnesota, St. Paul, Minnesota, USA
-
----
+🌱 Precision Agriculture Center<br>
+📍 Department of Soil, Water and Climate<br>
+University of Minnesota | St. Paul, MN 55108, USA
 
 ## Biola Adeyemi
-
-**Contributions:**
-Software development and writing – review and editing.
-
-Precision Agriculture Center
-Department of Soil, Water and Climate
-University of Minnesota, St. Paul, Minnesota, USA
-
----
+🌱 Precision Agriculture Center<br>
+📍 Department of Soil, Water and Climate<br>
+University of Minnesota | St. Paul, MN 55108, USA
 
 ## Renzo Negrini
-
-**Contributions:**
-Investigation and writing – review and editing.
-
-Precision Agriculture Center
-Department of Soil, Water and Climate
-University of Minnesota, St. Paul, Minnesota, USA
-
----
-
+🌱 Precision Agriculture Center<br>
+📍 Department of Soil, Water and Climate<br>
+University of Minnesota | St. Paul, MN 55108, USA
 ## Peter Anthony
-
-**Contributions:**
-Experiment implementation, resources, and writing – review and editing.
-
-Anthony Farm
-St. Peter, Minnesota, USA
+🌽 Anthony Farm Inc.<br>
+📍 St. Peter, MN 56082, USA
 
 ---
 
 # 🙏 Acknowledgments
 
-We sincerely acknowledge the collaborating farmers and agricultural consultants whose participation made this on-farm research possible.
-
-We particularly thank:
-
+We sincerely acknowledge the collaborating farmers and agricultural consultants whose participation made this on-farm research possible. We particularly thank:
 * **Peter Anthony — Anthony Farm**
 * **Brian Molitor — Molitor Brothers Farm**
 * **Blake Carlson — Molitor Brothers Farm**
 
-We gratefully acknowledge their contribution of **field access, farmer-owned research data, operational support, and practical knowledge** throughout the on-farm experiments.
-
-We also thank members of the **University of Minnesota Precision Agriculture group** for their field and data-collection support, including:
-
+We gratefully acknowledge their contribution of **field access, farmer-owned research data, operational support, and practical knowledge** throughout the on-farm experiments. We also thank members of the **University of Minnesota Precision Agriculture group** for their field and data-collection support, including:
 * Nicholas Brand
 * Seiya Wakahara
 * Ayoub Kechchour
 * Sukhdeep Singh
-
 ---
 
 # 💵 Funding
